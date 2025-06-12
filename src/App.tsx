@@ -10,40 +10,42 @@ export const App: React.FC = () => {
   const [perPage, setPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const nextPage = () => {
-    setCurrentPage(prev => prev + 1);
-  };
+  const startIndex = useMemo(() => {
+    const index = perPage * currentPage - perPage;
 
-  const prevPage = () => {
-    setCurrentPage(prev => prev - 1);
-  };
-
-  const cangePerPage = (event: ChangeEvent<HTMLSelectElement>) => {
-    setPerPage(+event.target.value);
-  };
-
-  const startIndexSlice = useMemo(() => {
-    const result = perPage * currentPage - perPage;
-
-    if (result < 0) {
+    if (index < 0) {
       return 0;
     }
 
-    return result;
+    return index;
   }, [perPage, currentPage]);
 
-  const endIndexSlice = startIndexSlice + perPage;
+  const endIndex = useMemo(() => {
+    const index = startIndex + perPage;
+
+    if (index >= items.length) {
+      return items.length;
+    }
+
+    return index;
+  }, [startIndex, perPage]);
 
   const visibleItems = useMemo(() => {
-    return items.slice(startIndexSlice, endIndexSlice);
-  }, [perPage, currentPage]);
+    return items.slice(startIndex, endIndex);
+  }, [startIndex, endIndex]);
+
+  const cangePerPage = (event: ChangeEvent<HTMLSelectElement>) => {
+    setCurrentPage(1);
+    setPerPage(+event.target.value);
+  };
 
   return (
     <div className="container">
       <h1>Items with Pagination</h1>
 
       <p className="lead" data-cy="info">
-        Page 1 (items {startIndexSlice} - {endIndexSlice} of {items.length})
+        Page {currentPage} (items {startIndex + 1} - {endIndex} of{' '}
+        {items.length})
       </p>
 
       <div className="form-group row">
@@ -53,6 +55,7 @@ export const App: React.FC = () => {
             id="perPageSelector"
             className="form-control"
             onChange={cangePerPage}
+            defaultValue={perPage}
           >
             <option value="3">3</option>
             <option value="5">5</option>
@@ -74,8 +77,7 @@ export const App: React.FC = () => {
         onPageChange={(number: number) => {
           setCurrentPage(number);
         }}
-        onNext={nextPage}
-        onPrev={prevPage}
+        setPage={setCurrentPage}
       />
     </div>
   );
