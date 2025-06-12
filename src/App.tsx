@@ -34,7 +34,9 @@ export const App: React.FC = () => {
     return items.slice(startIndex, endIndex);
   }, [startIndex, endIndex]);
 
-  const cangePerPage = (event: ChangeEvent<HTMLSelectElement>) => {
+  const changePerPage = (event: ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+
     setCurrentPage(1);
     setPerPage(+event.target.value);
   };
@@ -54,7 +56,7 @@ export const App: React.FC = () => {
             data-cy="perPageSelector"
             id="perPageSelector"
             className="form-control"
-            onChange={cangePerPage}
+            onChange={changePerPage}
             defaultValue={perPage}
           >
             <option value="3">3</option>

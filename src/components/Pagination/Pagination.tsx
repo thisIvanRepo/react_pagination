@@ -24,7 +24,9 @@ export const Pagination: React.FC<PropsPagination> = ({
     arrayNumber.push(i);
   }
 
-  const nextPage = () => {
+  const nextPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
     if (currentPage === numberPages) {
       return;
     }
@@ -32,7 +34,9 @@ export const Pagination: React.FC<PropsPagination> = ({
     setPage(prev => prev + 1);
   };
 
-  const prevPage = () => {
+  const prevPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
     if (currentPage === 1) {
       return;
     }
@@ -49,7 +53,7 @@ export const Pagination: React.FC<PropsPagination> = ({
             className="page-link"
             href="#prev"
             aria-disabled={currentPage === 1}
-            onClick={prevPage}
+            onClick={event => nextPage(event)}
           >
             «
           </a>
@@ -79,7 +83,7 @@ export const Pagination: React.FC<PropsPagination> = ({
             className="page-link"
             href="#next"
             aria-disabled={currentPage === numberPages}
-            onClick={nextPage}
+            onClick={event => nextPage(event)}
           >
             »
           </a>
